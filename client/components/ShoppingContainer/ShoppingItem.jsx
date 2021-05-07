@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+
 import UpdateButton from './UpdateButton.jsx';
 import DeleteButton from './DeleteButton.jsx';
 import MinusListButton from './MinusListButton.jsx';
@@ -11,8 +11,6 @@ import AddBuyButton from './AddBuyButton.jsx';
 
 //Pulls in newItem from container as prop(destructured as param)
 const ShoppingItem = ({ newItem }) => {
-  const { displayShopping } = useSelector((state) => state.ui);
-
   const {
     item_name,
     category,

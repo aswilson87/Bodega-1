@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/react-hooks';
+import { useQuery, gql, useMutation } from '@apollo/react-hooks';
+import { SHOPPING_REMOVE } from '../Queries/Queries';
 
 const GET_SHOPPING_ITEMS = gql`
   query shoppingItems {
@@ -18,18 +18,24 @@ const GET_SHOPPING_ITEMS = gql`
 `;
 
 function useShoppingActions() {
-  const [shoppingItems, setShoppingItems] = useState([]);
   const { data, error, refetch } = useQuery(GET_SHOPPING_ITEMS);
 
-  useEffect(() => {
-    if (!error && data?.getItems) {
-      setShoppingItems(data.getItems);
-    }
-  }, [data]);
+  // Handle deletions
+  const [shoppingRemove] = useMutation(SHOPPING_REMOVE, {
+    onCompleted: () => {
+      refetch();
+    },
+  });
+  const deleteShoppingItem = (id) => {
+    shoppingRemove({
+      variables: { itemId: id },
+    });
+  }
 
   return {
     data,
-    shoppingItems,
+    deleteShoppingItem,
+    shoppingItems: data?.getItems || [],
     refreshShoppingItems: refetch,
   };
 }

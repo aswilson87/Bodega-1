@@ -4,6 +4,7 @@ module.exports = {
   entry: "./client/index.js",
   output: { filename: "bundle.js", path: path.resolve(__dirname, "build") },
   mode: process.env.NODE_ENV,
+  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {
