@@ -21,14 +21,18 @@ function useShoppingActions() {
   const { data, error, refetch } = useQuery(GET_SHOPPING_ITEMS);
 
   // Handle deletions
-  const [shoppingRemove] = useMutation(SHOPPING_REMOVE, {
-    onCompleted: () => {
-      refetch();
-    },
-  });
-  const deleteShoppingItem = (id) => {
+  const [shoppingRemove] = useMutation(SHOPPING_REMOVE);
+  const deleteShoppingItem = (itemId) => {
     shoppingRemove({
-      variables: { itemId: id },
+      variables: { itemId: itemId },
+      update(cache) {
+        const existingShoppingItems = cache.readQuery({ query: GET_SHOPPING_ITEMS });
+        const newShoppingItems = existingShoppingItems.getItems.filter((t) => (t._id !== itemId));
+        cache.writeQuery({
+          query: GET_SHOPPING_ITEMS,
+          data: { getItems: newShoppingItems }
+        });
+      }
     });
   }
 
