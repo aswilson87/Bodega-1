@@ -1,22 +1,12 @@
-import React, { useEffect } from 'react';
-import { useMutation, gql, useLazyQuery } from '@apollo/react-hooks';
-import { SHOPPING_REMOVE } from '../../Queries/Queries';
+import React from 'react';
 import useShoppingActions from '../../hooks/useShoppingActions';
 
 //Deletes single item from shopping list
 const DeleteButton = ({ _id }) => {
-  const { refreshShoppingItems, shoppingItems } = useShoppingActions();
-
-  const [shoppingRemove] = useMutation(SHOPPING_REMOVE, {
-    onCompleted: () => {
-      refreshShoppingItems();
-    },
-  });
+  const { deleteShoppingItem } = useShoppingActions();
 
   const onButtonClick = () => {
-    shoppingRemove({
-      variables: { itemId: _id },
-    });
+    deleteShoppingItem(_id)
   };
 
   return (
