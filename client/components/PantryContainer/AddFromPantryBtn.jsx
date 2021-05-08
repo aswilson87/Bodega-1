@@ -10,6 +10,7 @@ const AddFromPantryBtn = ({ _id, showAlert, qty, par, item_name }) => {
   const [shoppingAddFromPantry] = useMutation(ADD_FROM_PANTRY, {
     onCompleted: () => {
       showAlert(true);
+      // setTimeout(showAlert(false), 3000);
       refreshShoppingItems();
     },
   });

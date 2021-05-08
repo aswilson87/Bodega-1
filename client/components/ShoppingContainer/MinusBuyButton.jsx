@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMutation, gql } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { SHOPPING_BUY_DOWN } from '../../Queries/Queries';
 import useShoppingActions from '../../hooks/useShoppingActions';
 

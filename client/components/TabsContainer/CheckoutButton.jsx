@@ -1,12 +1,9 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { checkoutBtn } from '../../store/actions/shoppingActions.js';
-import { useMutation, gql } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { SHOPPING_CHECKOUT } from '../../Queries/Queries';
 import useShoppingActions from '../../hooks/useShoppingActions';
 
 //Checkout button for shopping list
-//Sends POST to /api/shopping/checkout
 const CheckoutButton = () => {
   const { refreshShoppingItems } = useShoppingActions();
 

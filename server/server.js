@@ -4,7 +4,7 @@ const { ApolloServer } = require('apollo-server-express');
 const app = express();
 const path = require('path');
 
-const apiRouter = require('./routes/api.js');
+// const apiRouter = require('./routes/api.js');
 // const authRouter = require('./routes/authRoutes.js');
 
 // GraphQL/Apollo Imports
@@ -38,7 +38,7 @@ const apolloServer = new ApolloServer({
 apolloServer.applyMiddleware({ app, path: '/api/graphql' });
 
 // app.use('/', authRouter);
-app.use('/api', apiRouter);
+// app.use('/api', apiRouter);
 
 app.use('*', (req, res) =>
   res.status(404).send('Unable to find the requested resource!')

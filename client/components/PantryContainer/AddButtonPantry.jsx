@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMutation, gql } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { PANTRY_QTY_UP } from '../../Queries/Queries';
 import usePantryActions from '../../hooks/usePantryActions';
 

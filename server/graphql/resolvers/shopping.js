@@ -169,36 +169,41 @@ module.exports = {
           "SELECT * FROM shopping WHERE user_id = '1' AND buy_qty > 0;";
         const qres = await db.query(qStr);
         const basket = qres.rows;
-        basket.forEach(async (item) => {
-          if (item.pantry_id) {
-            qStr = `SELECT * FROM pantry WHERE _id = ${item.pantry_id};`;
-            const qres1 = await db.query(qStr);
-            const pantryItem = qres1.rows[0];
-            qStr = `UPDATE pantry
+        let i = 0;
+        await Promise.all(
+          basket.map(async (item) => {
+            i++;
+            console.log(i);
+            if (item.pantry_id) {
+              qStr = `SELECT * FROM pantry WHERE _id = ${item.pantry_id};`;
+              const qres1 = await db.query(qStr);
+              const pantryItem = qres1.rows[0];
+              qStr = `UPDATE pantry
                 SET qty = ${pantryItem.qty + item.buy_qty}
                 WHERE _id = ${item.pantry_id} RETURNING *;`;
-            await db.query(qStr);
-            qStr = `UPDATE shopping
+              await db.query(qStr);
+              qStr = `UPDATE shopping
               SET (buy_qty, list_qty) = (0, ${Math.max(
                 0,
                 item.list_qty - item.buy_qty
               )})
               WHERE _id = ${item._id} RETURNING *;`;
-            await db.query(qStr);
-          } else {
-            qStr = `INSERT INTO pantry (user_id, item_name, note, unit, qty, par, category) VALUES ('1','${item.item_name}', '${item.note}', '${item.unit}', '${item.buy_qty}', '0', '${item.category}') RETURNING *;`;
-            const qres2 = await db.query(qStr);
-            const pantry_id = qres2.rows[0]._id;
-            qStr = `UPDATE shopping
+              await db.query(qStr);
+            } else {
+              qStr = `INSERT INTO pantry (user_id, item_name, note, unit, qty, par, category) VALUES ('1','${item.item_name}', '${item.note}', '${item.unit}', '${item.buy_qty}', '0', '${item.category}') RETURNING *;`;
+              const qres2 = await db.query(qStr);
+              const pantry_id = qres2.rows[0]._id;
+              qStr = `UPDATE shopping
           SET (pantry_id, list_qty, buy_qty ) = ('${pantry_id}', ${Math.max(
-              0,
-              item.list_qty - item.buy_qty
-            )},0 )
+                0,
+                item.list_qty - item.buy_qty
+              )},0 )
           WHERE _id = ${item._id} RETURNING *;`;
-            await db.query(qStr);
-          }
-          return { success: true };
-        });
+              await db.query(qStr);
+            }
+            return { success: true };
+          })
+        );
       } catch (error) {
         console.log('error in shopping.js/shoppingCheckout', error);
         return { success: false };
@@ -218,7 +223,9 @@ module.exports = {
 
         if (!pantryItem) {
           const qStr = `INSERT INTO shopping (user_id, pantry_id, item_name, note, unit, list_qty, buy_qty, category)
-            SELECT user_id, _id, item_name, note, unit, '${par}', '0', category
+            SELECT user_id, _id, item_name, note, unit, '${
+              par - qty
+            }', '0', category
             FROM pantry
             WHERE _id = ${itemId} RETURNING *;`;
           await db.query(qStr);
